@@ -1,0 +1,16 @@
+#!name=YouTube Premium Logo (iOS App + Web)
+#!desc=Đổi logo YouTube sang logo YouTube Premium trên cả App YouTube iOS/iPadOS và trình duyệt Web
+
+[Rule]
+AND,((DOMAIN-SUFFIX,youtubei.googleapis.com), (PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,www.youtube.com), (PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,m.youtube.com), (PROTOCOL,UDP)),REJECT
+
+[MITM]
+hostname = %APPEND% youtubei.googleapis.com, www.youtube.com, m.youtube.com
+
+[Body Rewrite]
+http-response ^https:\/\/(www|m)\.youtube\.com(?::\d+)?\/($|\?|watch|results|shorts|feed|channel|@|c\/|user\/|playlist|gaming|podcasts|youtubei\/v1\/(browse|guide|next|search)) (\\x22|")YOUTUBE_LOGO(\\x22|") ${1}YOUTUBE_PREMIUM_LOGO${2}
+
+[Script]
+youtube.premium.logo = type=http-response,pattern=^https:\/\/youtubei\.googleapis\.com(?::\d+)?\/youtubei\/v1\/(guide|browse)(\?.*)?$,requires-body=1,max-size=-1,binary-body-mode=1,script-path=https://raw.githubusercontent.com/imnyanto/MiTM-Proxy/refs/heads/main/Youtube/youtube-premium-logo.js
