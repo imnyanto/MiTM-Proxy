@@ -1,5 +1,6 @@
 #!name=Youtube Premium by Mint
 #!desc=by Mint
+#!url=https://raw.githubusercontent.com/imnyanto/MiTM-Proxy/refs/heads/main/Youtube/YouTubee-Premium.sgmodule
 #!arguments=dịch lời bài hát:off,dịch phụ đề:off,ẩn tải lên:false,ẩn nút chọn đoạn:true,ẩn nút short:false,bật chế độ gỡ lỗi:false
 
 [Map Local]
