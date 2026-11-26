@@ -1,0 +1,27 @@
+#!name=YouTube Web Premium & AdBlock (PC)
+#!desc=Chặn quảng cáo & đổi logo YouTube Premium riêng cho trình duyệt Web trên máy tính PC / Laptop (video, Shorts, feed, anti-adblock), không trùng AdGuard DNS và không MITM googlevideo.
+#!url=https://raw.githubusercontent.com/imnyanto/MiTM-Proxy/refs/heads/main/Youtube/PC-AdBlock.sgmodule
+#!homepage=https://github.com/imnyanto/MiTM-Proxy/tree/main/Youtube
+#!author=imnyanto
+
+[Rule]
+AND,((DOMAIN,www.youtube.com), (PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,m.youtube.com), (PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,music.youtube.com), (PROTOCOL,UDP)),REJECT
+
+[URL Rewrite]
+^https?://(www|m|music)\.youtube\.com(?::\d+)?/api/stats/ads(\?.*)?$ - reject-200
+^https?://(www|m|music)\.youtube\.com(?::\d+)?/pagead/ - reject-img
+^https?://(www|m|music)\.youtube\.com(?::\d+)?/ptracking(\?.*)?$ - reject-200
+^https?://(www|m|music)\.youtube\.com(?::\d+)?/get_midroll_info(\?.*)?$ - reject-dict
+^https?://(www|m|music)\.youtube\.com(?::\d+)?/pcs/activeview - reject-200
+^https?://(www|m|music)\.youtube\.com(?::\d+)?/youtubei/v1/player/ad_break(\?.*)?$ - reject-dict
+
+[Header Rewrite]
+http-request ^https?://(www|m|music)\.youtube\.com(?::\d+)?/(youtubei/v1/|sw\.js_data) header-del If-None-Match
+
+[MITM]
+hostname = %APPEND% www.youtube.com, m.youtube.com, music.youtube.com
+
+[Script]
+youtube.pc.adblock = type=http-response,pattern=^https://(www|m|music)\.youtube\.com(?::\d+)?/(youtubei/v1/(player|next|browse|search|guide|get_watch|reel/(reel_watch_sequence|reel_item_watch))(\?.*)?$|sw\.js_data(\?.*)?$|($|\?|watch(\?|/|$)|shorts/|live/|results(\?|$)|feed/|channel/|@|c/|user/|playlist(\?|$)|gaming|podcasts)),requires-body=1,max-size=8388608,binary-body-mode=0,timeout=15,script-path=https://raw.githubusercontent.com/imnyanto/MiTM-Proxy/refs/heads/main/Youtube/youtube-pc-adblock.js
